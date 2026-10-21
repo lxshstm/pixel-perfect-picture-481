@@ -11,7 +11,7 @@ export const DEMO_MODE = true;
 
 export const BASIC = {
   name: "小馨",
-  title: "寄往宿舍的生日密信：我们的回忆收藏馆",
+  title: "第24次许愿",
   introLetter: [
     "亲爱的小馨：",
     "今天，有一个只属于你的秘密礼物。",
@@ -85,6 +85,7 @@ export type Gift = {
   name: string;
   icon: "watch" | "shoe" | "bag" | "briefcase" | "boot" | "camera" | "box" | "music";
   image?: string; // 可选：礼物照片路径
+  givenAt?: string; // 可选：纪念标签；不要填写会透露排序答案的完整日期
   text: string;
   /** 【待填写】真实赠送顺序（1 = 最早）。不填（undefined）的礼物不会被抽中 */
   order?: number;
@@ -165,4 +166,21 @@ export const FINALE = {
   // 【待填写】隐藏告白
   secret: "不管以后隔着多远，我都会一直一直朝你走过去。",
   closing: "这是我用好多晚上，一点点为你搭出来的密室。虽然隔着很远，但我的心意已经送到你身边啦。",
+};
+
+/* 官方一二布布素材由需求方提供；缺少图片时贴纸静默隐藏。
+ * 将压缩后的透明 PNG 上传为资产指针，在这里填入其 url。
+ * 名称按 bubbu-01.png 等编号；总新增资源不超过 2 MB。
+ */
+export type BubbuName = "seal" | "curator" | "peek" | "sleep" | "sit" | "hintFirst" | "hintSecond" | "toast" | "handhold" | "celebrate" | "hug" | "finale" | "shy";
+export const BUBBU: {
+  assets: Partial<Record<BubbuName, string>>;
+  showcase: readonly { index: number; name: BubbuName }[];
+  celebration: readonly BubbuName[];
+  hints: readonly BubbuName[];
+} = {
+  assets: {},
+  showcase: [{ index: 1, name: "peek" }, { index: 6, name: "sleep" }],
+  celebration: ["celebrate", "hug"],
+  hints: ["hintFirst", "hintSecond"],
 };
