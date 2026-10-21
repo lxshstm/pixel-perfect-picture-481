@@ -93,6 +93,18 @@
   --shadow-soft: 0 10px 30px -12px oklch(0.6 0.1 355 / 35%);
   --shadow-glow: 0 0 0 3px oklch(0.85 0.08 80 / 70%), 0 0 24px 4px oklch(0.85 0.1 80 / 60%);
   --shadow-select: 0 0 0 3px var(--rose), 0 8px 24px -8px oklch(0.6 0.12 355 / 60%);
+  --museum-brass: oklch(0.65 0.095 77);
+  --museum-brass-light: oklch(0.9 0.065 85);
+  --museum-ink: oklch(0.34 0.035 65);
+  --museum-wood: oklch(0.56 0.06 50);
+  --museum-wood-light: oklch(0.69 0.065 62);
+  --museum-glass: oklch(0.995 0.002 85 / 70%);
+  --museum-highlight: oklch(1 0 0 / 85%);
+  --museum-shadow: oklch(0.35 0.035 65 / 15%);
+  --museum-spot: oklch(0.94 0.065 85 / 65%);
+  --museum-metal: linear-gradient(120deg, var(--museum-brass), var(--museum-brass-light) 35%, var(--accent) 65%, var(--museum-brass));
+  --museum-timber: repeating-linear-gradient(2deg, transparent 0 6px, var(--museum-shadow) 7px 8px), linear-gradient(var(--museum-wood-light), var(--museum-wood));
+  --museum-case-shadow: 0 5px 12px var(--museum-shadow), inset 0 1px 0 var(--museum-highlight);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -127,7 +139,7 @@
 
 @utility font-display {
   font-family: var(--font-display-stack);
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
 }
 @utility bg-sky {
   background: var(--gradient-sky);
@@ -176,6 +188,43 @@
     @apply inline-flex size-11 items-center justify-center rounded-full bg-card/80 text-foreground transition active:scale-90;
   }
 }
+
+/* Museum presentation is shared by browsing, ordering and collection details. */
+.museum-heading { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 8px 0 22px; }
+.museum-heading h2 { font-size: 22px; line-height: 1.5; }
+.museum-heading p { font-size: 12px; color: var(--muted-foreground); margin-top: 4px; }
+.showcase.showcase { position: relative; display: flex; flex-direction: column; gap: 0; width: 100%; height: auto; padding: 0; overflow: visible; white-space: normal; text-align: left; border: 0; border-radius: 8px; background: transparent; box-shadow: var(--museum-case-shadow); color: var(--foreground); transition: transform .2s, box-shadow .2s; }
+.showcase:hover { transform: translateY(-2px); }
+.showcase:active { transform: scale(.98); }
+.showcase-glass { position: relative; display: block; width: 100%; aspect-ratio: 1 / 1; border: 1px solid var(--museum-brass-light); border-bottom: 0; border-radius: 8px 8px 0 0; overflow: hidden; background: var(--museum-glass); box-shadow: inset 0 0 18px var(--museum-shadow); }
+.showcase-glass::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(125deg, transparent 8%, var(--museum-highlight) 8.5%, var(--museum-highlight) 11%, transparent 11.5%, transparent 17%, var(--museum-highlight) 17.5%, transparent 18.5%); opacity: .6; }
+.showcase-spotlight { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0, var(--museum-spot), transparent 75%); transition: opacity .2s; }
+.showcase-object { position: absolute; inset: 12% 12% 16%; display: block; }
+.showcase-object > * { position: relative; z-index: 1; }
+.showcase-object svg { width: 48%; height: 48%; color: var(--primary); }
+.showcase-plinth { position: absolute; bottom: 10%; left: 17%; width: 66%; height: 8%; border-radius: 50%; background: var(--paper); box-shadow: 0 3px 5px var(--museum-shadow), inset 0 1px 0 var(--museum-highlight); }
+.showcase-base { display: flex; align-items: center; width: 100%; min-height: 75px; padding: 10px; border-radius: 0 0 8px 8px; background: var(--museum-timber); }
+.showcase-plaque { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 52px; padding: 7px 9px; background: var(--museum-metal); border: 1px solid var(--museum-brass); border-radius: 3px; color: var(--museum-ink); box-shadow: inset 0 1px 0 var(--museum-highlight), 0 2px 3px var(--museum-shadow); }
+.showcase-number { font-family: var(--font-display-stack); font-size: 18px; flex-shrink: 0; border-right: 1px solid var(--museum-brass); padding-right: 7px; }
+.showcase-name { font-family: var(--font-display-stack); font-size: 12px; font-weight: 600; line-height: 1.45; overflow-wrap: anywhere; }
+.showcase-position { position: absolute; top: 8px; left: 8px; z-index: 2; display: grid; place-items: center; width: 27px; height: 27px; border: 1px solid var(--museum-brass); border-radius: 50%; background: var(--museum-metal); color: var(--museum-ink); }
+.showcase-selected.showcase-selected { outline: 2px solid var(--museum-brass); outline-offset: 3px; transform: translateY(-2px); }
+.showcase-selected .showcase-glass { animation: glass-breathe 1.8s ease-in-out infinite; }
+.showcase-complete { box-shadow: var(--shadow-glow); }
+.museum-timeline { position: relative; display: flex; justify-content: space-between; margin: 20px auto; max-width: 42rem; padding-top: 13px; font-size: 12px; color: var(--muted-foreground); border-top: 1px solid var(--museum-brass); }
+.museum-timeline::before { content: ""; position: absolute; top: -4px; left: 0; width: 100%; height: 7px; background: repeating-linear-gradient(90deg, var(--museum-brass) 0 1px, transparent 1px calc(100% / 3 - 1px)); }
+.museum-detail-image { aspect-ratio: 1; padding: 28px; margin-top: 15px; background: var(--museum-glass); border: 1px solid var(--museum-brass-light); border-radius: 8px; box-shadow: inset 0 0 16px var(--museum-shadow); }
+.museum-detail-label { display: inline-block; background: var(--museum-metal); color: var(--museum-ink); padding: 4px 12px; border-radius: 3px; font-size: 12px; margin-top: 16px; }
+.museum-inscription { font-family: var(--font-display-stack); font-size: 13px; color: var(--accent-foreground); margin-top: 8px; }
+.bubbu { display: inline-block; flex-shrink: 0; object-fit: contain; pointer-events: none; }
+.bubbu-xs { width: 38px; height: 38px; }
+.bubbu-sm { width: 56px; height: 56px; }
+.bubbu-md { width: 80px; height: 80px; }
+.bubbu-lg { width: 104px; height: 104px; }
+.showcase-sticker { position: absolute; right: 2px; bottom: 0; z-index: 2; }
+.secret-companion { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity .2s; }
+.secret-trigger:hover .secret-companion, .secret-trigger:focus-visible .secret-companion { opacity: 1; }
+@keyframes glass-breathe { 50% { box-shadow: inset 0 0 18px var(--museum-spot), 0 0 10px var(--museum-spot); } }
 
 /* ---------- animations ---------- */
 @keyframes float-up {
