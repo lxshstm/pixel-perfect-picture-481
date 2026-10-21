@@ -1,6 +1,8 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Heart, Home, Lightbulb, Music, VolumeX, X } from "lucide-react";
-import { DEMO_MODE } from "./config";
+import { BASIC, BUBBU, DEMO_MODE } from "./config";
+import { Bubbu } from "./Bubbu";
+import { Button } from "@/components/ui/button";
 
 export function Floaters({ count = 14, kind = "up" }: { count?: number; kind?: "up" | "fall" }) {
   const items = useMemo(
@@ -58,7 +60,7 @@ export function Burst({ n = 36, className = "" }: { n?: number; className?: stri
             animation: `burst 1.6s cubic-bezier(.2,.7,.3,1) ${p.d}s both`,
           }}
         >
-          {p.g}
+          {i === 0 || i === Math.floor(n / 2) ? <Bubbu name={BUBBU.celebration[i === 0 ? 0 : 1] ?? "celebrate"} size="xs" /> : p.g}
         </span>
       ))}
     </div>
@@ -86,16 +88,17 @@ export function TopBar({
         </div>
       )}
       <div className="mx-auto flex max-w-5xl items-center gap-2 px-3 py-2">
-        <button className="btn-icon" onClick={onHome} aria-label="返回首页">
+        <Button variant="ghost" className="btn-icon" onClick={onHome} aria-label="返回首页">
           <Home className="size-5" />
-        </button>
+        </Button>
         <div className="min-w-0 flex-1 text-center">
+          <div className="text-xs text-muted-foreground">{BASIC.title}</div>
           <div className="truncate font-display text-base font-semibold">{title}</div>
           {chapter ? <div className="text-xs text-muted-foreground">第 {chapter} / 4 章</div> : null}
         </div>
-        <button className="btn-icon" onClick={onMusic} aria-label={music ? "关闭音乐" : "开启音乐"}>
+        <Button variant="ghost" className="btn-icon" onClick={onMusic} aria-label={music ? "关闭音乐" : "开启音乐"}>
           {music ? <Music className="size-5" /> : <VolumeX className="size-5" />}
-        </button>
+        </Button>
       </div>
     </header>
   );
@@ -121,15 +124,15 @@ export function HintBar({
         <div className="flex items-center gap-2">
           <Heart className="size-4 shrink-0 fill-primary text-primary" />
           <p className="flex-1 text-sm">{task}</p>
-          <button className="btn-soft !min-h-10 !px-3 text-sm" onClick={() => setOpen(true)}>
+          <Button variant="ghost" className="btn-soft !min-h-10 !px-3 text-sm" onClick={() => setOpen(true)}>
             <Lightbulb className="size-4 text-accent-foreground" /> 提示
-          </button>
+          </Button>
         </div>
         {children}
       </div>
       {open && (
         <Modal onClose={() => setOpen(false)}>
-          <h3 className="font-display text-lg">小小提示</h3>
+          <div className="flex items-center gap-3"><Bubbu key={used} name={BUBBU.hints[Math.min(used, 1)] ?? "hintFirst"} size="sm" /><h3 className="font-display text-lg">小小提示</h3></div>
           <ul className="mt-3 space-y-2 text-sm">
             {hints.slice(0, used).map((h, i) => (
               <li key={i} className="rounded-xl bg-muted p-3">
@@ -138,9 +141,9 @@ export function HintBar({
             ))}
           </ul>
           {used < hints.length ? (
-            <button className="btn-love mt-4 w-full" onClick={onUse}>
+            <Button variant="ghost" className="btn-love mt-4 w-full" onClick={onUse}>
               {used === 0 ? "给我一点点提示" : "再给我一个提示"}
-            </button>
+            </Button>
           ) : (
             <p className="mt-4 text-center text-xs text-muted-foreground">提示已经全部用完啦，你一定可以的</p>
           )}
@@ -153,10 +156,10 @@ export function HintBar({
 export function Modal({ children, onClose }: { children: ReactNode; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay p-4 anim-rise" onClick={onClose}>
-      <div className="paper-card relative w-full max-w-sm p-5" onClick={(e) => e.stopPropagation()} role="dialog">
-        <button className="btn-icon absolute right-2 top-2" onClick={onClose} aria-label="关闭">
+      <div className="paper-card relative max-h-[85dvh] w-full max-w-sm overflow-y-auto p-5" onClick={(e) => e.stopPropagation()} role="dialog">
+        <Button variant="ghost" className="btn-icon absolute right-2 top-2" onClick={onClose} aria-label="关闭">
           <X className="size-4" />
-        </button>
+        </Button>
         {children}
       </div>
     </div>
@@ -167,7 +170,8 @@ export function Toast({ text }: { text: string | null }) {
   if (!text) return null;
   return (
     <div className="pointer-events-none fixed inset-x-0 top-24 z-40 flex justify-center px-4">
-      <div key={text} className="paper-card anim-rise px-4 py-3 text-center text-sm">
+      <div key={text} role="status" className="paper-card anim-rise flex max-w-sm items-center gap-2 px-4 py-3 text-center text-sm">
+        <Bubbu name="toast" size="xs" />
         {text}
       </div>
     </div>
@@ -200,13 +204,13 @@ export function Celebrate({
             {l}
           </p>
         ))}
-        <button
+        <Button variant="ghost"
           className="btn-love mt-4"
           onClick={onNext}
           style={{ animation: `rise-in .8s ease-out ${0.6 + lines.length * 0.9}s both` }}
         >
           {button}
-        </button>
+        </Button>
       </div>
     </div>
   );

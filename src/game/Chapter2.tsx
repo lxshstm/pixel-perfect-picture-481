@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ShowcaseCard } from "./ShowcaseCard";
+import { Bubbu } from "./Bubbu";
 import { GIFTS } from "./config";
 import { correctGiftOrder, isGiftOrderCorrect, pickGifts, swap } from "./logic";
 import { sfx } from "./audio";
@@ -18,7 +21,7 @@ export function Chapter2({ state, update, toast, next }: ChapterProps) {
   const hints = ["这些礼物都很特别，但它们来到你身边的时间不一样哦。"];
   if (picked) {
     const first = GIFTS[correctGiftOrder(GIFTS, picked)[0]];
-    hints.push(`悄悄告诉你，这四件里面，最早收到的是「${first.name}」。`);
+    if (first) hints.push(`悄悄告诉你，这四件里面，最早收到的是「${first.name}」。`);
   } else hints.push("先点「开始回忆挑战」，看看是哪四份礼物吧。");
 
   const begin = () => {
@@ -80,67 +83,44 @@ export function Chapter2({ state, update, toast, next }: ChapterProps) {
   return (
     <>
       <main className="relative z-10 mx-auto w-full max-w-5xl flex-1 px-3 py-4">
-        <p className="text-center font-display text-lg">第二章 · 爱你的八份证据</p>
-        <p className="mb-4 text-center text-xs text-muted-foreground">礼物收藏馆 · 展柜编号不代表赠送顺序</p>
+        <div className="museum-heading">
+          <Bubbu name="curator" size="md" />
+          <div className="text-center"><h2 className="font-display">爱你的八份证据</h2>
+          <p>第二章 · 礼物收藏馆</p></div>
+        </div>
 
         {!picked ? (
           <>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {GIFTS.map((g, i) => (
-                <button
-                  key={g.no}
-                  onClick={() => {
-                    sfx.tap();
-                    setView(i);
-                  }}
-                  className="paper-card group overflow-hidden p-2 text-left transition hover:-translate-y-1"
-                >
-                  <div className="aspect-square overflow-hidden rounded-xl border border-border">
-                    <GiftArt gift={g} />
-                  </div>
-                  <p className="mt-2 text-[11px] text-muted-foreground">展柜 {g.no}</p>
-                  <p className="text-sm leading-snug">{g.name}</p>
-                </button>
+                <ShowcaseCard key={g.no} gift={g} index={i} onClick={() => {
+                  sfx.tap();
+                  setView(i);
+                }} />
               ))}
             </div>
             <div className="mt-6 text-center">
-              <button className="btn-love" onClick={() => setTask(true)}>
+              <Button variant="ghost" className="btn-love" onClick={() => setTask(true)}>
                 开始回忆挑战
-              </button>
+              </Button>
             </div>
           </>
         ) : (
           <div className="anim-rise">
             <p className="mb-3 text-center text-sm">
-              点一张礼物，再点另一张，它们就会交换位置。从 <b>最早</b> 排到 <b>最晚</b>。
+              四份心意，一条属于我们的时间线。
             </p>
             <div className="mx-auto grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
-              {order!.map((gi, i) => {
+              {(order ?? []).map((gi, i) => {
                 const g = GIFTS[gi];
-                return (
-                  <button
-                    key={gi}
-                    onClick={() => tapSort(i)}
-                    className={`paper-card relative overflow-hidden p-2 text-left transition ${
-                      sel === i ? "shadow-select -translate-y-1" : ""
-                    } ${busy ? "shadow-glow" : ""}`}
-                    style={busy ? { animation: `heartbeat 1s ease-in-out ${i * 0.2}s` } : undefined}
-                  >
-                    <span className="absolute left-3 top-3 z-10 flex size-7 items-center justify-center rounded-full bg-rose-grad text-sm text-primary-foreground">
-                      {i + 1}
-                    </span>
-                    <div className="aspect-square overflow-hidden rounded-xl border border-border">
-                      <GiftArt gift={g} />
-                    </div>
-                    <p className="mt-2 text-[11px] text-muted-foreground">展柜 {g.no}</p>
-                    <p className="text-sm leading-snug">{g.name}</p>
-                  </button>
-                );
+                if (!g) return null;
+                return <ShowcaseCard key={gi} gift={g} position={i + 1}
+                  selected={sel === i} busy={busy} onClick={() => tapSort(i)} />;
               })}
             </div>
-            <div className="mt-2 flex justify-between px-1 text-xs text-muted-foreground sm:mx-auto sm:max-w-2xl">
-              <span>← 最早</span>
-              <span>最晚 →</span>
+            <div className="museum-timeline">
+              <span>最早的心意</span>
+              <span>最近的礼物 →</span>
             </div>
           </div>
         )}
@@ -153,24 +133,26 @@ export function Chapter2({ state, update, toast, next }: ChapterProps) {
         onUse={() => update((s) => ({ ...s, hints: { ...s.hints, c2: Math.min(2, used + 1) } }))}
       >
         {picked && (
-          <button className="btn-love w-full" onClick={confirm} disabled={busy}>
+          <Button variant="ghost" className="btn-love w-full" onClick={confirm} disabled={busy}>
             确认我们的礼物时间线
-          </button>
+          </Button>
         )}
       </HintBar>
 
       {view !== null && (
         <Modal onClose={() => setView(null)}>
-          <div className="aspect-square overflow-hidden rounded-xl border border-border">
+          <div className="museum-detail-image">
             <GiftArt gift={GIFTS[view]} large />
           </div>
-          <p className="mt-3 text-xs text-muted-foreground">展柜 {GIFTS[view].no}</p>
+          <p className="museum-detail-label">馆藏 · {GIFTS[view].no}</p>
           <p className="font-display text-lg">{GIFTS[view].name}</p>
-          <p className="mt-2 text-sm leading-relaxed">“{GIFTS[view].text}”</p>
+          {GIFTS[view].givenAt && <p className="museum-inscription">{GIFTS[view].givenAt}</p>}
+          <p className="mt-3 border-t border-border pt-3 text-sm leading-loose">“{GIFTS[view].text}”</p>
         </Modal>
       )}
       {task && (
         <Modal onClose={() => setTask(false)}>
+          <Bubbu name="handhold" size="md" className="mx-auto mb-3 block" />
           <p className="font-display text-lg">回忆挑战</p>
           <p className="mt-3 text-sm leading-relaxed">
             这些礼物里，藏着我们一路走来的时间线。
@@ -179,9 +161,9 @@ export function Chapter2({ state, update, toast, next }: ChapterProps) {
             <br />
             小馨，你还记得它们来到你身边的先后顺序吗？
           </p>
-          <button className="btn-love mt-4 w-full" onClick={begin}>
+          <Button variant="ghost" className="btn-love mt-4 w-full" onClick={begin}>
             看看是哪四份礼物
-          </button>
+          </Button>
         </Modal>
       )}
     </>
