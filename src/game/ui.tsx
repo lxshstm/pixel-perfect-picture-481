@@ -75,7 +75,7 @@ export function TopBar({
   onHome,
 }: {
   title: string;
-  chapter?: number;
+  chapter?: number | undefined;
   music: boolean;
   onMusic: () => void;
   onHome: () => void;
