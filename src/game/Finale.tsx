@@ -11,6 +11,7 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
   const [confirm, setConfirm] = useState(false);
   const [big, setBig] = useState<number | null>(null);
   const [slide, setSlide] = useState(0);
+  const bigPhoto = big === null ? undefined : FINALE.carousel[big];
   const track = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -74,7 +75,7 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
               <div key={i} className="w-full shrink-0 snap-center px-6">
                 <Button variant="ghost"
                   onClick={() => setBig(i)}
-                  className="film mx-auto block w-full max-w-xs"
+                  className="film mx-auto block h-auto w-full max-w-xs whitespace-normal"
                   style={{ transform: `rotate(${i % 2 ? 2 : -2}deg)` }}
                 >
                   <img src={p.src} alt={p.caption} loading="lazy" className="aspect-square w-full rounded-sm object-cover" />
@@ -89,7 +90,7 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
                 key={i}
                 onClick={() => setSlide(i)}
                 aria-label={`第 ${i + 1} 张`}
-                className={`h-2 rounded-full transition-all ${i === slide ? "w-6 bg-primary" : "w-2 bg-secondary"}`}
+                className={`h-2 p-0 rounded-full transition-all ${i === slide ? "w-6 bg-primary" : "w-2 bg-secondary"}`}
               />
             ))}
           </div>
@@ -133,9 +134,9 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
           </div>
         </Modal>
       )}
-      {big !== null && (
+      {bigPhoto && (
         <Modal onClose={() => setBig(null)}>
-          <img src={FINALE.carousel[big].src} alt={FINALE.carousel[big].caption} className="w-full rounded-lg" />
+          <img src={bigPhoto.src} alt={bigPhoto.caption} className="w-full rounded-lg" />
         </Modal>
       )}
       {confirm && (

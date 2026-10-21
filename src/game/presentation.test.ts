@@ -18,6 +18,6 @@ describe("museum update constraints", () => {
     expect(restored.screen).toBe("c2");
     expect(restored.unlocked).toBe(2);
     expect(restored.c2).toEqual(saved.c2);
-    expect(restored.hints.c2).toBe(1);
+    expect(restored.hints["c2"]).toBe(1);
   });
 });

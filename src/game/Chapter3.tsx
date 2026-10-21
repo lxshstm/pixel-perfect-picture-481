@@ -33,13 +33,15 @@ export function Chapter3({ state, update, toast, next }: ChapterProps) {
   const [view, setView] = useState<number | null>(null);
   const [win, setWin] = useState(count >= CITIES.length);
   const strip = useRef<HTMLDivElement>(null);
-  const used = state.hints.c3 ?? 0;
+  const used = state.hints["c3"] ?? 0;
 
   useEffect(() => {
     strip.current?.scrollTo({ left: strip.current.scrollWidth, top: strip.current.scrollHeight, behavior: "smooth" });
   }, [count]);
 
   const nextCity = CITIES[count];
+  const popupCity = popup === null ? undefined : CITIES[popup];
+  const viewedCity = view === null ? undefined : CITIES[view];
   const hints = [
     "试着回忆一下，我们是从哪里开始，一站站走到这里的？",
     nextCity ? `下一站，是${nextCity.province}的${nextCity.name}。` : "已经全部点亮啦！",
@@ -64,7 +66,8 @@ export function Chapter3({ state, update, toast, next }: ChapterProps) {
     update((s) => ({ ...s, c3: { ...s.c3, count: n } }));
     setPopup(i);
     setTimeout(() => setPopup((p) => (p === i ? null : p)), 1800);
-    if (CITY_INTERLUDES[n]) setTimeout(() => toast(CITY_INTERLUDES[n]), 1900);
+    const interlude = CITY_INTERLUDES[n];
+    if (interlude) setTimeout(() => toast(interlude), 1900);
     if (n === CITIES.length) {
       update((s) => ({ ...s, unlocked: Math.max(s.unlocked, 4) }));
       setTimeout(() => {
@@ -150,6 +153,7 @@ export function Chapter3({ state, update, toast, next }: ChapterProps) {
                 </svg>
                 {CITIES.map((c, i) => {
                   const p = PTS[i];
+                  if (!p) return null;
                   const lit = i < count;
                   const glow = used >= 2 && i === count;
                   return (
@@ -197,19 +201,19 @@ export function Chapter3({ state, update, toast, next }: ChapterProps) {
         )}
       </main>
 
-      {popup !== null && (
+      {popup !== null && popupCity && (
         <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center">
           <div style={{ animation: "rise-in .5s ease-out both" }}>
-            <Film city={CITIES[popup]} index={popup} big />
-            <p className="mt-2 text-center text-sm">{CITIES[popup].memo}</p>
+            <Film city={popupCity} index={popup} big />
+            <p className="mt-2 text-center text-sm">{popupCity.memo}</p>
           </div>
         </div>
       )}
-      {view !== null && (
+      {view !== null && viewedCity && (
         <Modal onClose={() => setView(null)}>
           <div className="flex flex-col items-center">
-            <Film city={CITIES[view]} index={view} big />
-            <p className="mt-3 text-center text-sm">{CITIES[view].memo}</p>
+            <Film city={viewedCity} index={view} big />
+            <p className="mt-3 text-center text-sm">{viewedCity.memo}</p>
           </div>
         </Modal>
       )}

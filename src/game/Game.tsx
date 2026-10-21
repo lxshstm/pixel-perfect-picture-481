@@ -44,7 +44,7 @@ export function Game() {
   const enter = () => {
     if (state.music) startMusic();
     const target = ORDER[Math.min(state.unlocked, 5) - 1];
-    go(target);
+    if (target) go(target);
   };
 
   /** Guarded advance to prevent double-skips from rapid taps */
@@ -82,7 +82,7 @@ export function Game() {
   return (
     <div className="flex min-h-dvh flex-col">
       <TopBar
-        title={TITLES[state.screen]}
+        title={TITLES[state.screen] ?? "第24次许愿"}
         chapter={chapter <= 4 ? chapter : undefined}
         music={state.music}
         onMusic={toggleMusic}

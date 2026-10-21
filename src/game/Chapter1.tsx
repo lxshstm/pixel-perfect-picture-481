@@ -16,7 +16,7 @@ export function Chapter1({ state, update, toast, next }: ChapterProps) {
   const [win, setWin] = useState(state.c1.solved);
   const { clocks } = state.c1;
   const both = clocks[0] && clocks[1];
-  const used = state.hints.c1 ?? 0;
+  const used = state.hints["c1"] ?? 0;
 
   const hints = [...CHAPTER1.hints];
   if (DEMO_MODE) hints[1] += `（预览答案：${fmt(CHAPTER1.meetDate)} / ${fmt(CHAPTER1.confessDate)}）`;
@@ -37,7 +37,8 @@ export function Chapter1({ state, update, toast, next }: ChapterProps) {
           setTimeout(() => setPetals(false), 6000);
         }
       }
-      toast(CHAPTER1.scenes[scene].clockFound);
+      const foundScene = CHAPTER1.scenes[scene];
+      if (foundScene) toast(foundScene.clockFound);
       return;
     }
     sfx.tap();

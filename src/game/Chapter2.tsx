@@ -16,11 +16,13 @@ export function Chapter2({ state, update, toast, next }: ChapterProps) {
   const [win, setWin] = useState(state.c2.solved);
   const [busy, setBusy] = useState(false);
   const { picked, order } = state.c2;
-  const used = state.hints.c2 ?? 0;
+  const viewedGift = view === null ? undefined : GIFTS[view];
+  const used = state.hints["c2"] ?? 0;
 
   const hints = ["这些礼物都很特别，但它们来到你身边的时间不一样哦。"];
   if (picked) {
-    const first = GIFTS[correctGiftOrder(GIFTS, picked)[0]];
+    const firstIndex = correctGiftOrder(GIFTS, picked)[0];
+    const first = firstIndex === undefined ? undefined : GIFTS[firstIndex];
     if (first) hints.push(`悄悄告诉你，这四件里面，最早收到的是「${first.name}」。`);
   } else hints.push("先点「开始回忆挑战」，看看是哪四份礼物吧。");
 
@@ -31,7 +33,7 @@ export function Chapter2({ state, update, toast, next }: ChapterProps) {
       return;
     }
     let o = [...p];
-    while (isGiftOrderCorrect(GIFTS, o)) o = [o[1], o[0], ...o.slice(2)];
+    while (isGiftOrderCorrect(GIFTS, o)) o = swap(o, 0, 1);
     update((s) => ({ ...s, c2: { ...s.c2, picked: p, order: o } }));
     setTask(false);
   };
@@ -139,15 +141,15 @@ export function Chapter2({ state, update, toast, next }: ChapterProps) {
         )}
       </HintBar>
 
-      {view !== null && (
+      {viewedGift && (
         <Modal onClose={() => setView(null)}>
           <div className="museum-detail-image">
-            <GiftArt gift={GIFTS[view]} large />
+            <GiftArt gift={viewedGift} large />
           </div>
-          <p className="museum-detail-label">馆藏 · {GIFTS[view].no}</p>
-          <p className="font-display text-lg">{GIFTS[view].name}</p>
-          {GIFTS[view].givenAt && <p className="museum-inscription">{GIFTS[view].givenAt}</p>}
-          <p className="mt-3 border-t border-border pt-3 text-sm leading-loose">“{GIFTS[view].text}”</p>
+          <p className="museum-detail-label">馆藏 · {viewedGift.no}</p>
+          <p className="font-display text-lg">{viewedGift.name}</p>
+          {viewedGift.givenAt && <p className="museum-inscription">{viewedGift.givenAt}</p>}
+          <p className="mt-3 border-t border-border pt-3 text-sm leading-loose">“{viewedGift.text}”</p>
         </Modal>
       )}
       {task && (

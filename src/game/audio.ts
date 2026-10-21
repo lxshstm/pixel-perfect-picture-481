@@ -48,8 +48,10 @@ export function startMusic() {
   if (musicTimer || !ac()) return;
   let i = 0;
   musicTimer = setInterval(() => {
-    tone(MELODY[i % MELODY.length], 0, 1.2, 0.025, "sine");
-    if (i % 4 === 0) tone(MELODY[i % MELODY.length] / 2, 0, 2, 0.02, "sine");
+    const note = MELODY[i % MELODY.length];
+    if (note === undefined) return;
+    tone(note, 0, 1.2, 0.025, "sine");
+    if (i % 4 === 0) tone(note / 2, 0, 2, 0.02, "sine");
     i++;
   }, 520);
 }
