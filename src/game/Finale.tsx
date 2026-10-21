@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { FINALE } from "./config";
 import { sfx } from "./audio";
 import { Burst, Floaters, Modal } from "./ui";
+import { Bubbu } from "./Bubbu";
+import { Button } from "@/components/ui/button";
 
 export function Finale({ onRestart }: { onRestart: () => void }) {
   const [phase, setPhase] = useState<"box" | "opening" | "open">("box");
@@ -9,6 +11,7 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
   const [confirm, setConfirm] = useState(false);
   const [big, setBig] = useState<number | null>(null);
   const [slide, setSlide] = useState(0);
+  const bigPhoto = big === null ? undefined : FINALE.carousel[big];
   const track = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,6 +45,7 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
           >
             <div className="absolute left-1/2 top-0 h-full w-6 -translate-x-1/2 bg-gold-grad" />
             <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-4xl text-accent">🎀</div>
+            <Bubbu name="finale" size="sm" className="absolute -top-12 right-4" />
           </div>
           <div className="relative mx-auto h-44 w-52 rounded-b-xl bg-secondary shadow-soft">
             <div className="absolute left-1/2 top-0 h-full w-6 -translate-x-1/2 bg-gold-grad" />
@@ -52,9 +56,9 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
           {phase === "opening" && <Burst n={60} className="top-0" />}
         </div>
         {phase === "box" && (
-          <button className="btn-love relative z-10 mt-10 text-lg" onClick={open}>
+          <Button variant="ghost" className="btn-love relative z-10 mt-10 text-lg" onClick={open}>
             打开我的生日礼物
-          </button>
+          </Button>
         )}
       </main>
     );
@@ -69,24 +73,24 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
           <div ref={track} className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none]">
             {FINALE.carousel.map((p, i) => (
               <div key={i} className="w-full shrink-0 snap-center px-6">
-                <button
+                <Button variant="ghost"
                   onClick={() => setBig(i)}
-                  className="film mx-auto block w-full max-w-xs"
+                  className="film mx-auto block h-auto w-full max-w-xs whitespace-normal"
                   style={{ transform: `rotate(${i % 2 ? 2 : -2}deg)` }}
                 >
                   <img src={p.src} alt={p.caption} loading="lazy" className="aspect-square w-full rounded-sm object-cover" />
                   <p className="mt-2 font-display text-sm">{p.caption}</p>
-                </button>
+                </Button>
               </div>
             ))}
           </div>
           <div className="mt-3 flex justify-center gap-2">
             {FINALE.carousel.map((_, i) => (
-              <button
+              <Button variant="ghost"
                 key={i}
                 onClick={() => setSlide(i)}
                 aria-label={`第 ${i + 1} 张`}
-                className={`h-2 rounded-full transition-all ${i === slide ? "w-6 bg-primary" : "w-2 bg-secondary"}`}
+                className={`h-2 p-0 rounded-full transition-all ${i === slide ? "w-6 bg-primary" : "w-2 bg-secondary"}`}
               />
             ))}
           </div>
@@ -104,19 +108,20 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
         <p className="mt-10 text-center text-sm leading-relaxed text-muted-foreground">{FINALE.closing}</p>
 
         <div className="mt-6 flex flex-col items-center gap-6">
-          <button className="btn-soft" onClick={() => setConfirm(true)}>
+          <Button variant="ghost" className="btn-soft" onClick={() => setConfirm(true)}>
             再陪我回忆一次
-          </button>
-          <button
+          </Button>
+          <Button variant="ghost"
             aria-label="小爱心"
             onClick={() => {
               sfx.bloom();
               setSecret(true);
             }}
-            className="size-11 text-xs text-primary/40 transition hover:text-primary"
+            className="secret-trigger relative size-11 text-xs text-primary/40 transition hover:text-primary"
           >
+            <Bubbu name="shy" size="sm" className="secret-companion" />
             ♥
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -129,21 +134,21 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
           </div>
         </Modal>
       )}
-      {big !== null && (
+      {bigPhoto && (
         <Modal onClose={() => setBig(null)}>
-          <img src={FINALE.carousel[big].src} alt={FINALE.carousel[big].caption} className="w-full rounded-lg" />
+          <img src={bigPhoto.src} alt={bigPhoto.caption} className="w-full rounded-lg" />
         </Modal>
       )}
       {confirm && (
         <Modal onClose={() => setConfirm(false)}>
           <p className="text-center">真的要从最开始重新走一遍吗？</p>
           <div className="mt-4 flex justify-center gap-3">
-            <button className="btn-soft" onClick={() => setConfirm(false)}>
+            <Button variant="ghost" className="btn-soft" onClick={() => setConfirm(false)}>
               再想想
-            </button>
-            <button className="btn-love" onClick={onRestart}>
+            </Button>
+            <Button variant="ghost" className="btn-love" onClick={onRestart}>
               重新开始
-            </button>
+            </Button>
           </div>
         </Modal>
       )}

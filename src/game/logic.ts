@@ -9,14 +9,14 @@ export function pickGifts(gifts: Gift[], n = 4, rand = Math.random): number[] {
   if (pool.length < n) return [];
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
+    [pool[i], pool[j]] = [pool[j], pool[i]] as [number, number];
   }
   return pool.slice(0, n);
 }
 
 /** Correct earliest→latest order, computed from configured gift order (never from display number). */
 export const correctGiftOrder = (gifts: Gift[], picked: number[]) =>
-  [...picked].sort((a, b) => (gifts[a].order ?? 0) - (gifts[b].order ?? 0));
+  [...picked].sort((a, b) => (gifts[a]?.order ?? 0) - (gifts[b]?.order ?? 0));
 
 export const isGiftOrderCorrect = (gifts: Gift[], current: number[]) =>
   current.length > 0 && current.every((v, i) => v === correctGiftOrder(gifts, current)[i]);
@@ -27,7 +27,7 @@ export function shuffledPuzzle(n: number, rand = Math.random): number[] {
   do {
     for (let i = n - 1; i > 0; i--) {
       const j = Math.floor(rand() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      [arr[i], arr[j]] = [arr[j], arr[i]] as [number, number];
     }
   } while (isPuzzleSolved(arr));
   return arr;
@@ -38,7 +38,7 @@ export const isPuzzleSolved = (perm: number[]) => perm.every((p, i) => p === i);
 
 export const swap = (arr: number[], a: number, b: number) => {
   const c = [...arr];
-  [c[a], c[b]] = [c[b], c[a]];
+  [c[a], c[b]] = [c[b], c[a]] as [number, number];
   return c;
 };
 

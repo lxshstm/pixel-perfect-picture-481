@@ -12,7 +12,7 @@ export function Chapter4({ state, update, next }: ChapterProps) {
   const [stage, setStage] = useState(state.c4.solved ? 1 : 0);
   const [imgOk, setImgOk] = useState(true);
   const perm = state.c4.perm;
-  const used = state.hints.c4 ?? 0;
+  const used = state.hints["c4"] ?? 0;
 
   useEffect(() => {
     if (!perm) update((s) => ({ ...s, c4: { ...s.c4, perm: shuffledPuzzle(N * N) } }));

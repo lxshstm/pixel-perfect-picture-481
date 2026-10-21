@@ -14,10 +14,10 @@ const MAP = {
 
 export function GiftArt({ gift, large }: { gift: Gift; large?: boolean }) {
   if (gift.image)
-    return <img src={gift.image} alt={gift.name} loading="lazy" className="size-full object-cover" />;
+    return <img src={gift.image} alt={gift.name} loading="lazy" className="size-full object-contain" />;
   const Icon = MAP[gift.icon];
   return (
-    <div className="flex size-full items-center justify-center bg-sky">
+    <div className="flex size-full items-center justify-center">
       <Icon className={large ? "size-20 text-primary" : "size-10 text-primary"} strokeWidth={1.4} />
     </div>
   );

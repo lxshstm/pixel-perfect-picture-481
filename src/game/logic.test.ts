@@ -10,7 +10,7 @@ import {
 } from "./logic";
 import type { Gift } from "./config";
 
-const g = (no: string, order?: number): Gift => ({ no, name: no, icon: "box", text: "", order });
+const g = (no: string, order?: number): Gift => ({ no, name: no, icon: "box", text: "", ...(order === undefined ? {} : { order }) });
 
 describe("gift chapter", () => {
   const gifts = [g("01", 5), g("02", 2), g("03", 3), g("04"), g("05", 1), g("06", 4)];
