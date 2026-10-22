@@ -200,7 +200,7 @@
 .showcase-glass { position: relative; display: block; width: 94%; aspect-ratio: 1 / 1.08; overflow: visible; z-index: 2; }
 .showcase-glass-roof, .showcase-glass-side, .showcase-glass-front { position: absolute; display: block; pointer-events: none; border: 1px solid var(--museum-brass); }
 .showcase-glass-roof { left: 0; right: 12%; top: 0; height: 14%; transform: skewX(-36deg); transform-origin: bottom left; background: var(--museum-glass); box-shadow: inset 0 1px 0 var(--museum-highlight); }
-.showcase-glass-side { right: 0; top: 0; width: 12%; bottom: 14%; transform: skewY(-54deg); transform-origin: bottom left; background: linear-gradient(90deg, var(--museum-glass), var(--museum-shadow)); }
+.showcase-glass-side { right: 0; top: 14%; width: 12%; bottom: 0; transform: skewY(-54deg); transform-origin: top left; background: linear-gradient(90deg, var(--museum-glass), var(--museum-shadow)); }
 .showcase-glass-front { inset: 14% 12% 0 0; background: linear-gradient(115deg, var(--museum-glass), transparent 45%, var(--museum-glass)); box-shadow: inset 0 0 18px var(--museum-shadow); }
 .showcase-glass-front::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 8%, var(--museum-highlight) 8.5%, var(--museum-highlight) 10%, transparent 10.5%, transparent 17%, var(--museum-highlight) 17.5%, transparent 18.5%); opacity: .55; }
 .showcase-spotlight { position: absolute; inset: 14% 12% 0 0; background: radial-gradient(ellipse at 50% 0, var(--museum-spot), transparent 75%); transition: opacity .2s; pointer-events: none; }
